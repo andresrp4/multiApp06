@@ -3,46 +3,68 @@
     margin: 0 auto;
     padding: 30px;
     background-color: #f5f5f5;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     text-align: center;
   }
   
   .click-counter h2 {
-    color: #333;
+    color: #2c3e50;
     margin-bottom: 20px;
+    font-size: 1.8rem;
   }
   
-  .click-counter p {
-    font-size: 1.5rem;
+  .counter-display {
+    font-size: 1.8rem;
     margin-bottom: 30px;
-    color: #444;
+    color: #34495e;
+    font-weight: 500;
   }
   
-  .click-counter button {
-    padding: 10px 20px;
-    margin: 0 10px;
-    font-size: 1rem;
+  .button-container {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+  }
+  
+  .click-button, .reset-button {
+    padding: 12px 24px;
+    font-size: 1.1rem;
     border: none;
-    border-radius: 5px;
+    border-radius: 8px;
     cursor: pointer;
     transition: all 0.3s;
+    min-width: 120px;
   }
   
-  .click-counter button:first-of-type {
-    background-color: #61dafb;
+  .click-button {
+    background-color: #3498db;
     color: white;
   }
   
-  .click-counter button:first-of-type:hover {
-    background-color: #4fa8d3;
+  .click-button:hover {
+    background-color: #2980b9;
+    transform: translateY(-2px);
   }
   
-  .click-counter button:last-of-type {
-    background-color: #ff6b6b;
+  .reset-button {
+    background-color: #e74c3c;
     color: white;
   }
   
-  .click-counter button:last-of-type:hover {
-    background-color: #ff5252;
+  .reset-button:hover {
+    background-color: #c0392b;
+    transform: translateY(-2px);
+  }
+  
+  /* Responsividade */
+  @media (max-width: 480px) {
+    .button-container {
+      flex-direction: column;
+      gap: 12px;
+    }
+    
+    .click-button, .reset-button {
+      width: 100%;
+    }
   }

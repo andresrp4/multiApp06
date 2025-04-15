@@ -6,6 +6,7 @@ function CepFinder() {
   const [address, setAddress] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [coordinates, setCoordinates] = useState(null);
 
   const fetchAddress = async () => {
     if (!cep || cep.length !== 8) {
@@ -15,20 +16,51 @@ function CepFinder() {
 
     setLoading(true);
     setError(null);
+    setCoordinates(null);
     
     try {
-      const response = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
-      const data = await response.json();
+      // 1. Primeiro busca o endereço pelo CEP
+      const cepResponse = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
+      const cepData = await cepResponse.json();
       
-      if (data.erro) {
+      if (cepData.erro) {
         setError('CEP não encontrado');
         setAddress(null);
+        return;
+      }
+
+      setAddress(cepData);
+      
+      // 2. Agora busca as coordenadas geográficas (geocoding)
+      const locationQuery = `${cepData.logradouro}, ${cepData.bairro}, ${cepData.localidade}, ${cepData.uf}`;
+      const nominatimResponse = await fetch(
+        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(locationQuery)}`
+      );
+      
+      const nominatimData = await nominatimResponse.json();
+      
+      if (nominatimData.length > 0) {
+        setCoordinates({
+          lat: nominatimData[0].lat,
+          lon: nominatimData[0].lon
+        });
       } else {
-        setAddress(data);
+        // Se não encontrar coordenadas exatas, tenta apenas com a cidade
+        const cityResponse = await fetch(
+          `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(cepData.localidade)}`
+        );
+        const cityData = await cityResponse.json();
+        
+        if (cityData.length > 0) {
+          setCoordinates({
+            lat: cityData[0].lat,
+            lon: cityData[0].lon
+          });
+        }
       }
     } catch (err) {
-      setError('Erro ao buscar CEP');
-      setAddress(null);
+      setError('Erro ao buscar informações de localização');
+      console.error(err);
     } finally {
       setLoading(false);
     }
@@ -59,6 +91,32 @@ function CepFinder() {
           <p><strong>Logradouro:</strong> {address.logradouro}</p>
           <p><strong>Bairro:</strong> {address.bairro}</p>
           <p><strong>Cidade/UF:</strong> {address.localidade}/{address.uf}</p>
+          
+          {coordinates && (
+            <div className="map-container">
+              <h4>Localização no Mapa:</h4>
+              <iframe
+                title="Mapa do local"
+                width="100%"
+                height="400"
+                frameBorder="0"
+                scrolling="no"
+                marginHeight="0"
+                marginWidth="0"
+                src={`https://www.openstreetmap.org/export/embed.html?bbox=${parseFloat(coordinates.lon)-0.01},${parseFloat(coordinates.lat)-0.01},${parseFloat(coordinates.lon)+0.01},${parseFloat(coordinates.lat)+0.01}&layer=mapnik&marker=${coordinates.lat},${coordinates.lon}`}
+              ></iframe>
+              <br/>
+              <small>
+                <a 
+                  href={`https://www.openstreetmap.org/?mlat=${coordinates.lat}&mlon=${coordinates.lon}#map=16/${coordinates.lat}/${coordinates.lon}`} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                >
+                  Ver mapa maior
+                </a>
+              </small>
+            </div>
+          )}
         </div>
       )}
     </div>
