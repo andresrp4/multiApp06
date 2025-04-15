@@ -1,0 +1,87 @@
+.tic-tac-toe {
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f5f5f5;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .tic-tac-toe h2 {
+    color: #333;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  .status {
+    font-size: 1.2rem;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 20px;
+    padding: 10px;
+    background-color: #61dafb;
+    color: white;
+    border-radius: 5px;
+  }
+  
+  .board {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  
+  .square {
+    aspect-ratio: 1/1;
+    background-color: white;
+    border: 2px solid #61dafb;
+    border-radius: 5px;
+    font-size: 2.5rem;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+  }
+  
+  .square:hover {
+    background-color: #e6f7ff;
+  }
+  
+  .square:disabled {
+    cursor: not-allowed;
+  }
+  
+  button[onClick] {
+    background-color: #61dafb;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s;
+    display: block;
+    margin: 0 auto;
+  }
+  
+  button[onClick]:hover {
+    background-color: #4fa8d3;
+  }
+
+
+.status.winner {
+    background-color: #4caf50; 
+    animation: pulse 0.5s infinite alternate;
+  }
+  
+
+  @keyframes pulse {
+    from {
+      transform: scale(1);
+    }
+    to {
+      transform: scale(1.05);
+    }
+  }
